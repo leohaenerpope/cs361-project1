@@ -33,11 +33,7 @@ public class DFA implements DFAInterface{
     @Override
     public boolean addState(String name) {
         State newState = new DFAState(name);
-        if (!states.contains(newState)) {
-            states.add(newState);
-            return true;
-        }
-        return false;
+        return states.add(newState);
     }
 
     @Override
@@ -62,8 +58,7 @@ public class DFA implements DFAInterface{
 
     @Override
     public void addSigma(char symbol) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addSigma'");
+        alphabet.add(symbol);
     }
 
     @Override
@@ -79,26 +74,36 @@ public class DFA implements DFAInterface{
 
     @Override
     public State getState(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getState'");
+        var state = new DFAState(name);
+        if (states.contains(state)){
+            return state;
+        }
+        return null;
     }
 
     @Override
     public boolean isFinal(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isFinal'");
+        return finalStates.contains(new DFAState(name));
     }
 
     @Override
     public boolean isStart(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isStart'");
+        return initialState.equals(new DFAState(name));
     }
 
     @Override
     public boolean addTransition(String fromState, String toState, char onSymb) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addTransition'");
+        var fromDFAState = new DFAState(fromState);
+        var toDFAState = new DFAState(toState);
+        if (!alphabet.contains(onSymb) || !states.contains(fromDFAState) || !states.contains(toDFAState)){
+            return false;
+        }
+        
+        if (!transitions.containsKey(fromDFAState)){
+            transitions.put(fromDFAState, new HashMap<>());
+        }
+        transitions.get(fromDFAState).put(onSymb, toDFAState);
+        return true;
     }
 
     @Override

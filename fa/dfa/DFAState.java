@@ -1,7 +1,5 @@
 package fa.dfa;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import fa.State;
