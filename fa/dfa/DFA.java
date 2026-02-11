@@ -1,10 +1,30 @@
 package fa.dfa;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import fa.State;
 
+/**
+ * Uses HashSet to represent sets, and 
+ */
 public class DFA implements DFAInterface{
+
+    private Set<Character> alphabet;
+    private Set<State> states;
+    private Set<State> finalStates;
+    private Map<State, Map<Character, State>> transitions; // seems like this would work
+    private State initialState;
+
+    public DFA() {
+        this.alphabet = new HashSet<>();
+        this.states = new HashSet<>();
+        this.finalStates = new HashSet<>();
+        this.transitions = new HashMap<>();
+        this.initialState = null;
+    }
 
     @Override
     public boolean addState(String name) {
