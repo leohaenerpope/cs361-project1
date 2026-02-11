@@ -8,15 +8,17 @@ import java.util.Set;
 import fa.State;
 
 /**
- * Uses HashSet to represent sets, and 
+ * Uses HashSet to represent sets, and HashMaps to represent maps, using 
+ * 
+ * @author Leo Haener-Pope, Lucas Coltrin
  */
 public class DFA implements DFAInterface{
 
     private Set<Character> alphabet;
-    private Set<State> states;
-    private Set<State> finalStates;
-    private Map<State, Map<Character, State>> transitions; // seems like this would work
-    private State initialState;
+    private Set<DFAState> states;
+    private Set<DFAState> finalStates;
+    private Map<DFAState, Map<Character, DFAState>> transitions; // seems like this would work
+    private DFAState initialState;
 
     public DFA() {
         this.alphabet = new HashSet<>();
@@ -28,8 +30,13 @@ public class DFA implements DFAInterface{
 
     @Override
     public boolean addState(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addState'");
+        for (DFAState dfaState : states){
+            if (dfaState.getName().equals(name)) {
+                return false;
+            }
+        }
+        states.add(new DFAState(name));
+        return true;
     }
 
     @Override
