@@ -15,23 +15,21 @@ import fa.State;
 public class DFA implements DFAInterface{
 
     private Set<Character> alphabet;
-    private Set<DFAState> states;
-    private Set<DFAState> finalStates;
-    private Map<DFAState, Map<Character, DFAState>> transitions; // seems like this would work
-    private DFAState initialState;
+    private Set<State> states; // stores DFAStates
+    private State initialState;
+    // Final states are stored in individual DFAStates as a boolean value isFinalState
+    // Transitions are specified in individual DFAStates
 
     public DFA() {
         this.alphabet = new HashSet<>();
         this.states = new HashSet<>();
-        this.finalStates = new HashSet<>();
-        this.transitions = new HashMap<>();
         this.initialState = null;
     }
 
     @Override
     public boolean addState(String name) {
-        for (DFAState dfaState : states){
-            if (dfaState.getName().equals(name)) {
+        for (State state: states){
+            if (state.getName().equals(name)) {
                 return false;
             }
         }
@@ -47,8 +45,12 @@ public class DFA implements DFAInterface{
 
     @Override
     public boolean setStart(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setStart'");
+        State newInitialState = new DFAState(name);
+        if (states.contains(newInitialState)) {
+            initialState = newInitialState;
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -65,8 +67,7 @@ public class DFA implements DFAInterface{
 
     @Override
     public Set<Character> getSigma() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSigma'");
+        return alphabet;
     }
 
     @Override
