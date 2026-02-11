@@ -1,33 +1,64 @@
 package fa.dfa;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import fa.State;
 
+/**
+ * Uses HashSet to represent sets, and HashMaps to represent maps, using 
+ * 
+ * @author Leo Haener-Pope, Lucas Coltrin
+ */
 public class DFA implements DFAInterface{
+
+    // All of the 5-tuple is stored in the DFA Object as we use HashSets (immutable) for storing states
+    // Meaning the states can't have their own different values changed.
+    private Set<Character> alphabet;
+    private Set<State> states; // stores DFAStates
+    private State initialState;
+    private Set<State> finalStates;
+    private Map<State, Map<Character, State>> transitions;
+
+    public DFA() {
+        this.alphabet = new HashSet<>();
+        this.states = new HashSet<>();
+        this.initialState = null;
+        this.finalStates = new HashSet<>();
+        this.transitions = new HashMap<>();
+    }
 
     @Override
     public boolean addState(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addState'");
+        State newState = new DFAState(name);
+        return states.add(newState);
     }
 
     @Override
     public boolean setFinal(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setFinal'");
+        State state = new DFAState(name);
+        if (states.contains(state)){
+            finalStates.add(state);
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean setStart(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setStart'");
+        State newInitialState = new DFAState(name);
+        if (states.contains(newInitialState)) {
+            initialState = newInitialState;
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void addSigma(char symbol) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addSigma'");
+        alphabet.add(symbol);
     }
 
     @Override
@@ -38,32 +69,41 @@ public class DFA implements DFAInterface{
 
     @Override
     public Set<Character> getSigma() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSigma'");
+        return alphabet;
     }
 
     @Override
     public State getState(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getState'");
+        var state = new DFAState(name);
+        if (states.contains(state)){
+            return state;
+        }
+        return null;
     }
 
     @Override
     public boolean isFinal(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isFinal'");
+        return finalStates.contains(new DFAState(name));
     }
 
     @Override
     public boolean isStart(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isStart'");
+        return initialState.equals(new DFAState(name));
     }
 
     @Override
     public boolean addTransition(String fromState, String toState, char onSymb) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addTransition'");
+        var fromDFAState = new DFAState(fromState);
+        var toDFAState = new DFAState(toState);
+        if (!alphabet.contains(onSymb) || !states.contains(fromDFAState) || !states.contains(toDFAState)){
+            return false;
+        }
+        
+        if (!transitions.containsKey(fromDFAState)){
+            transitions.put(fromDFAState, new HashMap<>());
+        }
+        transitions.get(fromDFAState).put(onSymb, toDFAState);
+        return true;
     }
 
     @Override
