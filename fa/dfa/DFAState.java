@@ -11,25 +11,9 @@ import fa.State;
  */
 public class DFAState extends State {
 
-    private Map<Character, DFAState> transitions;
-    private boolean isFinalState;
-
     public DFAState(String name){
         super(name);
-        this.transitions = new HashMap<>();
-        this.isFinalState = false;
     }
-
-    /**
-     * Configures whether this DFAState is a final state or not
-     * @param isFinal if isFinal is true, stores that this DFAState is a final state
-     * 
-     * @author Leo Haener-Pope
-     */
-    public void setFinalState(boolean isFinal) {
-        isFinalState = isFinal;
-    }
-
 
     // Overrides for equals to make contains() function nicely work for HashSet
     // Java makes you override hashCode() function too or else equals override may not work correctly

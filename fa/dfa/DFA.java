@@ -14,33 +14,40 @@ import fa.State;
  */
 public class DFA implements DFAInterface{
 
+    // All of the 5-tuple is stored in the DFA Object as we use HashSets (immutable) for storing states
+    // Meaning the states can't have their own different values changed.
     private Set<Character> alphabet;
     private Set<State> states; // stores DFAStates
     private State initialState;
-    // Final states are stored in individual DFAStates as a boolean value isFinalState
-    // Transitions are specified in individual DFAStates
+    private Set<State> finalStates;
+    private Map<State, Map<Character, State>> transitions;
 
     public DFA() {
         this.alphabet = new HashSet<>();
         this.states = new HashSet<>();
         this.initialState = null;
+        this.finalStates = new HashSet<>();
+        this.transitions = new HashMap<>();
     }
 
     @Override
     public boolean addState(String name) {
-        for (State state: states){
-            if (state.getName().equals(name)) {
-                return false;
-            }
+        State newState = new DFAState(name);
+        if (!states.contains(newState)) {
+            states.add(newState);
+            return true;
         }
-        states.add(new DFAState(name));
-        return true;
+        return false;
     }
 
     @Override
     public boolean setFinal(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setFinal'");
+        State state = new DFAState(name);
+        if (states.contains(state)){
+            finalStates.add(state);
+            return true;
+        }
+        return false;
     }
 
     @Override
