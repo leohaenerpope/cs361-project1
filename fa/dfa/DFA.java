@@ -63,8 +63,30 @@ public class DFA implements DFAInterface{
 
     @Override
     public boolean accepts(String s) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'accepts'");
+        if (initialState == null){
+            return false; // Makes sure initial state has been set
+        }
+        var curState = initialState;
+        for (int i = 0; i < s.length(); i++){
+            char character = s.charAt(i);
+            if (!alphabet.contains(character)){
+                return false; // Makes sure character is inside Sigma
+            }
+
+            if (i == s.length()-1){ // checks if state is final, for last i
+                if (isFinal(curState.getName())){
+                    return true;
+                }
+                return false;
+            }
+
+            if (transitions.containsKey(curState) && transitions.get(curState).containsKey(character)){
+                curState = transitions.get(curState).get(character); // checks transition map for correct state: character: state
+            } else {
+                return false;
+            }
+        }
+        return false; // should never reach here
     }
 
     @Override
