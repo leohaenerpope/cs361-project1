@@ -1,14 +1,18 @@
 package fa.dfa;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
 import fa.State;
 
 /**
- * Uses HashSet to represent sets, and HashMaps to represent maps, using 
+ * Represents a Definite Finite Automaton, where each DFA state can have a transition pertaining to
+ * each letter in the sigma, but no more than one per character.
+ * 
+ * Uses LinkedHashSet to represent sets, and HashMaps (map<key, map<key, value>>) to represent maps.
+ * HashSets are Linked as the toString requires order they were added in to function correctly with DFATest.java
  * 
  * @author Leo Haener-Pope, Lucas Coltrin
  */
@@ -23,10 +27,10 @@ public class DFA implements DFAInterface{
     private Map<State, Map<Character, State>> transitions;
 
     public DFA() {
-        this.alphabet = new HashSet<>();
-        this.states = new HashSet<>();
+        this.alphabet = new LinkedHashSet<>();
+        this.states = new LinkedHashSet<>();
         this.initialState = null;
-        this.finalStates = new HashSet<>();
+        this.finalStates = new LinkedHashSet<>();
         this.transitions = new HashMap<>();
     }
 
@@ -73,16 +77,16 @@ public class DFA implements DFAInterface{
                 return false; // Makes sure character is inside Sigma
             }
 
+            if (transitions.containsKey(curState) && transitions.get(curState).containsKey(character)){
+                curState = transitions.get(curState).get(character); // checks transition map for correct state: character: state
+            } else {
+                return false;
+            }
+
             if (i == s.length()-1){ // checks if state is final, for last i
                 if (isFinal(curState.getName())){
                     return true;
                 }
-                return false;
-            }
-
-            if (transitions.containsKey(curState) && transitions.get(curState).containsKey(character)){
-                curState = transitions.get(curState).get(character); // checks transition map for correct state: character: state
-            } else {
                 return false;
             }
         }
@@ -118,7 +122,7 @@ public class DFA implements DFAInterface{
         var fromDFAState = new DFAState(fromState);
         var toDFAState = new DFAState(toState);
         if (!alphabet.contains(onSymb) || !states.contains(fromDFAState) || !states.contains(toDFAState)){
-            return false;
+            return false; // if not alphabet character or not state for either, return false
         }
         
         if (!transitions.containsKey(fromDFAState)){
@@ -132,6 +136,50 @@ public class DFA implements DFAInterface{
     public DFA swap(char symb1, char symb2) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'swap'");
+    }
+
+    /**
+     * Helpful function for printing out the 5-tuple of the DFA
+     * 
+     * @return string output, matching the DFATest.java tests for toString
+     */
+    public String toString() {
+        String retString = "Q = { "; // states first
+        for (State state : states){
+            retString += state.toString() + " ";
+        }
+        retString += "}\nSigma = { "; // now the alphabet
+        for (char character : alphabet){
+            retString += character + " ";
+        }
+
+        retString += "}\ndelta =\n "; // now print transition table
+        for (char character : alphabet){
+            retString += "\t" + character;
+        }
+        retString += "\n";
+        for (State state : states){
+            
+            retString += state.toString() + " ";
+            for (char character : alphabet){
+                retString += "\t";
+                if (transitions.get(state).containsKey(character)){
+                    retString += transitions.get(state).get(character).toString();
+                } else{
+                    retString += " ";
+                }
+            }
+            retString += "\n";
+        }
+
+        retString += "q0 = " + initialState.toString(); // print initial state
+        retString += "\nF = { "; // and lastly, print final states
+        for (State state : finalStates){
+            retString += state.toString() + " ";
+        }
+        retString += "}\n";
+
+        return retString;
     }
     
 }
