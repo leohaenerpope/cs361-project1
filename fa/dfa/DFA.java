@@ -134,8 +134,46 @@ public class DFA implements DFAInterface{
 
     @Override
     public DFA swap(char symb1, char symb2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'swap'");
+        DFA copy = new DFA();
+
+        //copy sigma
+        for (char c : this.alphabet){
+            copy.addSigma(c);
+        }
+
+        //copy states
+        for (State s : this.states){
+            copy.addState(s.getName());
+        }
+    
+        //copy initial state
+        if (initialState != null){
+            copy.setStart(this.initialState.getName());
+        }
+
+        //copy final states
+        for (State f : this.finalStates){
+            copy.setFinal(f.getName());
+        }
+
+        for(Map.Entry<State, Map<Character, State>> rowEntry : this.transitions.entrySet()){
+            State from = rowEntry.getKey();
+            Map<Character, State> row = rowEntry.getValue();
+            for (Map.Entry<Character, State> cell : row.entrySet()){
+                char symb = cell.getKey();
+                State to = cell.getValue();
+
+                if (symb == symb1){
+                    symb = symb2;
+                } else if (symb == symb2){
+                    symb = symb1;
+                }
+                copy.addTransition(from.getName(), to.getName(), symb);
+            }
+        }
+
+        return copy;
+
     }
 
     /**
